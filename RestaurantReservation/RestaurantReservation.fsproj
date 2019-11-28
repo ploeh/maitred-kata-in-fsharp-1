@@ -10,4 +10,8 @@
     <WarningsAsErrors />
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="MaîtreD.fs" />
+  </ItemGroup>
+
 </Project>
