@@ -2,4 +2,4 @@
 
 type Reservation = { Quantity : int }
 
-let canAccept _ _ _ = true
+let canAccept _ _ { Quantity = q } = q = 1

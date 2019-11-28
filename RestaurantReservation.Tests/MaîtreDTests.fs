@@ -4,6 +4,8 @@ open Xunit
 open Swensen.Unquote
 open Ploeh.Kata.MaîtreD
 
-[<Fact>]
-let ``Boutique restaurant`` () =
-    test <@ canAccept 12 [] { Quantity = 1 } @>
+[<Theory>]
+[<InlineData( 1,  true)>]
+[<InlineData(13, false)>]
+let ``Boutique restaurant`` quantity expected =
+    expected =! canAccept 12 [] { Quantity = quantity }
