@@ -8,4 +8,4 @@ type Reservation = {
     Email : string
     Quantity : int }
 
-let canAccept _ _ { Quantity = q } = q = 1
+let canAccept _ _ { Quantity = q } = q <> 13

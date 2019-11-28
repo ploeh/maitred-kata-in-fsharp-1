@@ -16,5 +16,6 @@ let aReservation =
 [<Theory>]
 [<InlineData( 1,  true)>]
 [<InlineData(13, false)>]
+[<InlineData(12,  true)>]
 let ``Boutique restaurant`` quantity expected =
     expected =! canAccept 12 [] { aReservation with Quantity = quantity }
