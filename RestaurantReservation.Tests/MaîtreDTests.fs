@@ -19,6 +19,7 @@ type BoutiqueTestCases () as this =
        this.Add (12,  [], 13, false)
        this.Add (12,  [], 12,  true)
        this.Add ( 4, [2],  3, false)
+       this.Add (10, [2],  3,  true)
 
 [<Theory; ClassData(typeof<BoutiqueTestCases>)>]
 let ``Boutique restaurant`` capacity reservatedSeats quantity expected =

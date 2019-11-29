@@ -8,5 +8,9 @@ type Reservation = {
     Email : string
     Quantity : int }
 
-let canAccept _ reservations { Quantity = q } =
-    q <> 13 && Seq.isEmpty reservations
+let canAccept capacity reservations { Quantity = q } =
+    let reservedSeats =
+        match Seq.tryHead reservations with
+        | Some r -> r.Quantity
+        | None -> 0
+    reservedSeats + q <= capacity
