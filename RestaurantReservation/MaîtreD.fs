@@ -8,4 +8,5 @@ type Reservation = {
     Email : string
     Quantity : int }
 
-let canAccept _ _ { Quantity = q } = q <> 13
+let canAccept _ reservations { Quantity = q } =
+    q <> 13 && Seq.isEmpty reservations
