@@ -8,6 +8,7 @@ type Reservation = {
     Email : string
     Quantity : int }
 
-let canAccept capacity reservations { Quantity = q } =
-    let reservedSeats = Seq.sumBy (fun r -> r.Quantity) reservations
+let canAccept capacity reservations { Quantity = q; Date = d } =
+    let relevantReservations = Seq.filter (fun r -> r.Date = d) reservations
+    let reservedSeats = Seq.sumBy (fun r -> r.Quantity) relevantReservations
     reservedSeats + q <= capacity
