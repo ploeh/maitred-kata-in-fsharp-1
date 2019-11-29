@@ -9,8 +9,5 @@ type Reservation = {
     Quantity : int }
 
 let canAccept capacity reservations { Quantity = q } =
-    let reservedSeats =
-        match Seq.tryHead reservations with
-        | Some r -> r.Quantity
-        | None -> 0
+    let reservedSeats = Seq.sumBy (fun r -> r.Quantity) reservations
     reservedSeats + q <= capacity
