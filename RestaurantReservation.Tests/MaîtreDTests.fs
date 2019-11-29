@@ -13,9 +13,12 @@ let aReservation =
         Quantity = 1
     }
 
-[<Theory>]
-[<InlineData( 1,  true)>]
-[<InlineData(13, false)>]
-[<InlineData(12,  true)>]
+type BoutiqueTestCases () as this =
+    inherit TheoryData<int, bool> ()
+    do this.Add ( 1,  true)
+       this.Add (13, false)
+       this.Add (12,  true)
+
+[<Theory; ClassData(typeof<BoutiqueTestCases>)>]
 let ``Boutique restaurant`` quantity expected =
     expected =! canAccept 12 [] { aReservation with Quantity = quantity }
