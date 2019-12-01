@@ -34,7 +34,7 @@ type BoutiqueTestCases () as this =
 [<Theory; ClassData(typeof<BoutiqueTestCases>)>]
 let ``Boutique restaurant`` (capacity, rs, r, expected) =
     let reservations = List.map reserve rs
-    let actual = canAccept [table capacity] reservations (reserve r)
+    let actual = canAccept (Communal capacity) reservations (reserve r)
     expected =! actual
 
 type HauteCuisineTestCases () as this =
@@ -42,12 +42,13 @@ type HauteCuisineTestCases () as this =
     do this.Add ([2;2;4;4],        [], (4, d3),  true)
        this.Add ([2;2;4;4],        [], (5, d3), false)
        this.Add (  [2;2;4], [(2, d3)], (4, d3),  true)
+       this.Add (  [2;2;4], [(3, d3)], (4, d3), false)
 
 [<Theory; ClassData(typeof<HauteCuisineTestCases>)>]
 let ``Haute cuisine`` (tableSeats, rs, r, expected) =
     let tables = List.map table tableSeats
     let reservations = List.map reserve rs
 
-    let actual = canAccept tables reservations (reserve r)
+    let actual = canAccept (Tables tables) reservations (reserve r)
 
     expected =! actual
