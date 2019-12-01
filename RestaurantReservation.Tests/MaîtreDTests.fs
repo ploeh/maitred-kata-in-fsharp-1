@@ -7,6 +7,7 @@ open Ploeh.Kata.MaîtreD
 
 let d1 = DateTime (2023, 9, 14)
 let d2 = DateTime (2023, 9, 15)
+let d3 = DateTime (2024, 6,  7)
 let aReservation =
     {
         Date = d1
@@ -14,6 +15,8 @@ let aReservation =
         Email = ""
         Quantity = 1
     }
+
+let table s = { Seats = s }
 
 let reserve (q, d) = { aReservation with Quantity = q; Date = d }
 
@@ -31,5 +34,18 @@ type BoutiqueTestCases () as this =
 [<Theory; ClassData(typeof<BoutiqueTestCases>)>]
 let ``Boutique restaurant`` (capacity, rs, r, expected) =
     let reservations = List.map reserve rs
-    let actual = canAccept capacity reservations (reserve r)
+    let actual = canAccept [table capacity] reservations (reserve r)
+    expected =! actual
+
+type HauteCuisineTestCases () as this =
+    inherit TheoryData<int list, (int * DateTime) list, (int * DateTime), bool> ()
+    do this.Add ([2;2;4;4], [], (4, d3), true)
+
+[<Theory; ClassData(typeof<HauteCuisineTestCases>)>]
+let ``Haute cuisine`` (tableSeats, rs, r, expected) =
+    let tables = List.map table tableSeats
+    let reservations = List.map reserve rs
+
+    let actual = canAccept tables reservations (reserve r)
+
     expected =! actual
