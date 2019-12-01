@@ -39,8 +39,9 @@ let ``Boutique restaurant`` (capacity, rs, r, expected) =
 
 type HauteCuisineTestCases () as this =
     inherit TheoryData<int list, (int * DateTime) list, (int * DateTime), bool> ()
-    do this.Add ([2;2;4;4], [], (4, d3),  true)
-       this.Add ([2;2;4;4], [], (5, d3), false)
+    do this.Add ([2;2;4;4],        [], (4, d3),  true)
+       this.Add ([2;2;4;4],        [], (5, d3), false)
+       this.Add (  [2;2;4], [(2, d3)], (4, d3),  true)
 
 [<Theory; ClassData(typeof<HauteCuisineTestCases>)>]
 let ``Haute cuisine`` (tableSeats, rs, r, expected) =

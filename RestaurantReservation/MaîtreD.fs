@@ -11,8 +11,9 @@ type Reservation = {
     Quantity : int }
 
 let canAccept tables reservations { Quantity = q; Date = d } =
-    let capacity = tables |> Seq.map (fun t -> t.Seats) |> Seq.max
+    let largestTable = tables |> Seq.map (fun t -> t.Seats) |> Seq.max
+    let capacity = tables |> Seq.sumBy (fun t -> t.Seats)
     let relevantReservations =
         Seq.filter (fun r -> r.Date.Date = d.Date) reservations
     let reservedSeats = Seq.sumBy (fun r -> r.Quantity) relevantReservations
-    reservedSeats + q <= capacity
+    q <= largestTable && reservedSeats + q <= capacity
