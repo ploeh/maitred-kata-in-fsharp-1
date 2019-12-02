@@ -19,13 +19,14 @@ let reserve (q, d) = { aReservation with Quantity = q; Date = d }
 
 type BoutiqueTestCases () as this =
     inherit TheoryData<int, (int * DateTime) list, (int * DateTime), bool> ()
-    do this.Add (12,                        [], ( 1, d1),  true)
-       this.Add (12,                        [], (13, d1), false)
-       this.Add (12,                        [], (12, d1),  true)
-       this.Add ( 4,                 [(2, d1)], ( 3, d1), false)
-       this.Add (10,                 [(2, d1)], ( 3, d1),  true)
-       this.Add (10, [(3, d1);(2, d1);(3, d1)], ( 3, d1), false)
-       this.Add ( 4,                 [(2, d2)], ( 3, d1),  true)
+    do this.Add (12,                        [], ( 1, d1            ),  true)
+       this.Add (12,                        [], (13, d1            ), false)
+       this.Add (12,                        [], (12, d1            ),  true)
+       this.Add ( 4,                 [(2, d1)], ( 3, d1            ), false)
+       this.Add (10,                 [(2, d1)], ( 3, d1            ),  true)
+       this.Add (10, [(3, d1);(2, d1);(3, d1)], ( 3, d1            ), false)
+       this.Add ( 4,                 [(2, d2)], ( 3, d1            ),  true)
+       this.Add ( 4,                 [(2, d1)], ( 3, d1.AddHours 1.), false)
 
 [<Theory; ClassData(typeof<BoutiqueTestCases>)>]
 let ``Boutique restaurant`` (capacity, rs, r, expected) =
