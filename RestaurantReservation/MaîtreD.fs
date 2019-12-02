@@ -14,14 +14,14 @@ type TableConfiguration = Communal of int | Tables of Table list
 
 let private fits r t = r.Quantity <= t.Seats
 
-let canAccept config reservations ({ Quantity = q; Date = d } as r) =
+let canAccept (seatingDur : TimeSpan) config reservations ({ Date = d } as r) =
     let contemporaneousReservations =
-        Seq.filter (fun r -> r.Date.Date = d.Date) reservations
+        Seq.filter (fun x -> x.Date.Subtract seatingDur < d.Date) reservations
     match config with
     | Communal capacity ->
         let reservedSeats =
             Seq.sumBy (fun r -> r.Quantity) contemporaneousReservations
-        reservedSeats + q <= capacity
+        reservedSeats + r.Quantity <= capacity
     | Tables tables ->
         let rs = Seq.sort contemporaneousReservations
         let remainingTables = Seq.deleteFirstsBy fits (Seq.sort tables) rs

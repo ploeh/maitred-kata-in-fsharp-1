@@ -5,9 +5,10 @@ open Xunit
 open Swensen.Unquote
 open Ploeh.Kata.MaîtreD
 
-let d1 = DateTime (2023, 9, 14)
-let d2 = DateTime (2023, 9, 15)
-let d3 = DateTime (2024, 6,  7)
+let d1 = DateTime (2023,  9, 14)
+let d2 = DateTime (2023,  9, 15)
+let d3 = DateTime (2024,  6,  7)
+let d4 = DateTime (2023, 10, 22, 18, 0, 0)
 let aReservation =
     {
         Date = d1
@@ -15,6 +16,10 @@ let aReservation =
         Email = ""
         Quantity = 1
     }
+
+type Int32 with
+    member x.hours = TimeSpan.FromHours (float x)
+    member x.days = TimeSpan.FromDays (float x)
 
 let table s = { Seats = s }
 
@@ -34,7 +39,7 @@ type BoutiqueTestCases () as this =
 [<Theory; ClassData(typeof<BoutiqueTestCases>)>]
 let ``Boutique restaurant`` (capacity, rs, r, expected) =
     let reservations = List.map reserve rs
-    let actual = canAccept (Communal capacity) reservations (reserve r)
+    let actual = canAccept (1 .days) (Communal capacity) reservations (reserve r)
     expected =! actual
 
 type HauteCuisineTestCases () as this =
@@ -49,6 +54,19 @@ let ``Haute cuisine`` (tableSeats, rs, r, expected) =
     let tables = List.map table tableSeats
     let reservations = List.map reserve rs
 
-    let actual = canAccept (Tables tables) reservations (reserve r)
+    let actual = canAccept (1 .days) (Tables tables) reservations (reserve r)
+
+    expected =! actual
+
+type SecondSeatingsTestCases () as this =
+    inherit TheoryData<TimeSpan, int list, (int * DateTime) list, (int * DateTime), bool> ()
+    do this.Add (2 .hours, [2;2;4], [(4, d4)], (3, d4.Add (2 .hours)), true)
+
+[<Theory; ClassData(typeof<SecondSeatingsTestCases>)>]
+let ``Second seatings`` (dur, tableSeats, rs, r, expected) =
+    let tables = List.map table tableSeats
+    let reservations = List.map reserve rs
+
+    let actual = canAccept dur (Tables tables) reservations (reserve r)
 
     expected =! actual
