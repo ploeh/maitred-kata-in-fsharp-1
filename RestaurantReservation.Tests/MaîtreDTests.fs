@@ -18,8 +18,12 @@ let aReservation =
     }
 
 type Int32 with
+    member x.minutes = TimeSpan.FromMinutes (float x)
     member x.hours = TimeSpan.FromHours (float x)
     member x.days = TimeSpan.FromDays (float x)
+
+type Double with
+    member x.hours = TimeSpan.FromHours x
 
 let table s = { Seats = s }
 
@@ -60,7 +64,30 @@ let ``Haute cuisine`` (tableSeats, rs, r, expected) =
 
 type SecondSeatingsTestCases () as this =
     inherit TheoryData<TimeSpan, int list, (int * DateTime) list, (int * DateTime), bool> ()
-    do this.Add (2 .hours, [2;2;4], [(4, d4)], (3, d4.Add (2 .hours)), true)
+    do this.Add (
+        2 .hours,
+        [2;2;4],
+        [(4, d4)],
+        (3, d4.Add (2 .hours)),
+        true)
+       this.Add (
+        2.5 .hours,
+        [2;4;4],
+        [(2, d4);(1, d4.AddMinutes 15.);(2, d4.Subtract (15 .minutes))],
+        (3, d4.AddHours 2.),
+        false)
+       this.Add (
+        2.5 .hours,
+        [2;4;4],
+        [(2, d4);(2, d4.Subtract (15 .minutes))],
+        (3, d4.AddHours 2.),
+        true)
+       this.Add (
+        2.5 .hours,
+        [2;4;4],
+        [(2, d4);(1, d4.AddMinutes 15.);(2, d4.Subtract (15 .minutes))],
+        (3, d4.AddHours 2.25),
+        true)
 
 [<Theory; ClassData(typeof<SecondSeatingsTestCases>)>]
 let ``Second seatings`` (dur, tableSeats, rs, r, expected) =

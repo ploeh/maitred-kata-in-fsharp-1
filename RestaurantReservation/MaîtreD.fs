@@ -14,9 +14,17 @@ type TableConfiguration = Communal of int | Tables of Table list
 
 let private fits r t = r.Quantity <= t.Seats
 
-let canAccept (seatingDur : TimeSpan) config reservations ({ Date = d } as r) =
+let private isContemporaneous
+    (seatingDur : TimeSpan)
+    (candidate : Reservation)
+    (existing : Reservation) =
+    let aSeatingBefore = candidate.Date.Subtract seatingDur
+    let aSeatingAfter = candidate.Date.Add seatingDur
+    aSeatingBefore < existing.Date && existing.Date < aSeatingAfter
+
+let canAccept (seatingDur : TimeSpan) config reservations r =
     let contemporaneousReservations =
-        Seq.filter (fun x -> x.Date.Subtract seatingDur < d.Date) reservations
+        Seq.filter (isContemporaneous seatingDur r) reservations
     match config with
     | Communal capacity ->
         let reservedSeats =
