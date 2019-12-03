@@ -25,7 +25,7 @@ type Int32 with
 type Double with
     member x.hours = TimeSpan.FromHours x
 
-let table s = { Seats = s }
+let table s = Discrete s
 
 let reserve (q, d) = { aReservation with Quantity = q; Date = d }
 
@@ -95,5 +95,22 @@ let ``Second seatings`` (dur, tableSeats, rs, r, expected) =
     let reservations = List.map reserve rs
 
     let actual = canAccept dur (Tables tables) reservations (reserve r)
+
+    expected =! actual
+
+type AlternativeTableConfigurationTestCases () as this =
+    inherit TheoryData<Table list, int list, int, bool> ()
+    do this.Add (
+        [Discrete 4; Discrete 1; Discrete 2; Group [2;2;2]],
+        [3;1;2],
+        2,
+        true)
+
+[<Theory; ClassData(typeof<AlternativeTableConfigurationTestCases>)>]
+let ``Alternative table configurations`` (tables, rs, r, expected) =
+    let res i = reserve (i, d4)
+    let reservations = List.map res rs
+
+    let actual = canAccept (1 .days) (Tables tables) reservations (res r)
 
     expected =! actual

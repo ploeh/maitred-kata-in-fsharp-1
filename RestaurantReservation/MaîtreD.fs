@@ -2,7 +2,7 @@
 
 open System
 
-type Table = { Seats : int }
+type Table = Discrete of int | Group of int list
 
 type Reservation = {
     Date : DateTime
@@ -12,7 +12,9 @@ type Reservation = {
 
 type TableConfiguration = Communal of int | Tables of Table list
 
-let private fits r t = r.Quantity <= t.Seats
+let private fits r = function
+    | Discrete seats -> r.Quantity <= seats
+    | Group _ -> true
 
 let private isContemporaneous
     (seatingDur : TimeSpan)
