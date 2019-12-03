@@ -105,6 +105,11 @@ type AlternativeTableConfigurationTestCases () as this =
         [3;1;2],
         2,
         true)
+       this.Add (
+        [Discrete 4; Discrete 1; Discrete 2; Group [2;2;2]],
+        [3;1;2],
+        7,
+        false)
 
 [<Theory; ClassData(typeof<AlternativeTableConfigurationTestCases>)>]
 let ``Alternative table configurations`` (tables, rs, r, expected) =

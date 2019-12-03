@@ -14,7 +14,7 @@ type TableConfiguration = Communal of int | Tables of Table list
 
 let private fits r = function
     | Discrete seats -> r.Quantity <= seats
-    | Group _ -> true
+    | Group tables -> r.Quantity <= List.sum tables
 
 let private isContemporaneous
     (seatingDur : TimeSpan)
