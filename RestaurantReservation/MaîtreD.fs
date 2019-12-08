@@ -29,7 +29,8 @@ let private allot r = function
         if r.Quantity <= seats
         then None
         else Some (Discrete seats)
-    | Group tables -> Some (Group tables)
+    | Group tables ->
+        tables |> Seq.consume r.Quantity |> Seq.toList |> Group |> Some
 
 let private allocate (tables : Table seq) r = seq {
     let mutable found = false
@@ -44,7 +45,7 @@ let private allocate (tables : Table seq) r = seq {
             | Some t -> yield t
     }
 
-let canAccept (seatingDur : TimeSpan) config reservations r =
+let canAccept seatingDur config reservations r =
     let contemporaneousReservations =
         Seq.filter (isContemporaneous seatingDur r) reservations
     match config with
@@ -53,6 +54,6 @@ let canAccept (seatingDur : TimeSpan) config reservations r =
             Seq.sumBy (fun r -> r.Quantity) contemporaneousReservations
         reservedSeats + r.Quantity <= capacity
     | Tables tables ->
-        let rs = Seq.sort contemporaneousReservations
-        let remainingTables = Seq.fold allocate (Seq.sort tables) rs
+        let remainingTables =
+            Seq.fold allocate (Seq.ofList tables) contemporaneousReservations
         Seq.exists (fits r) remainingTables
